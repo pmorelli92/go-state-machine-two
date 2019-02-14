@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/pmorelli92/go-state-machine-two/pkg/domain"
-	"time"
 )
 
 func main() {
@@ -19,8 +18,6 @@ func main() {
 	fmt.Println(vehicle.GetCurrentState())
 
 	vehicle.Ready(domain.Admin)
-
-	vehicle.LastChangeOfState = time.Now().AddDate(0,0,-2)
 
 	domain.SetVehiclesFromReadyToUnknown([]*domain.Vehicle{ vehicle })
 	fmt.Println(vehicle.GetCurrentState())

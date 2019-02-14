@@ -38,16 +38,20 @@ const (
 type Vehicle struct {
 	battery           int
 	fsm               *fsm.FSM
-	LastChangeOfState time.Time
+	lastChangeOfState time.Time
 }
 
 func (v *Vehicle) Battery() int {
 	return v.battery
 }
 
+func (v *Vehicle) LastChangeOfState() time.Time {
+	return v.lastChangeOfState
+}
+
 func NewVehicle() *Vehicle {
 
-	vehicle := &Vehicle{battery:100, LastChangeOfState: time.Now() }
+	vehicle := &Vehicle{battery:100, lastChangeOfState: time.Now() }
 	vehicle.fsm = fsm.NewFSM(
 		readyState,
 		fsm.Events{
@@ -68,7 +72,7 @@ func NewVehicle() *Vehicle {
 				e.FSM.SetState(bountyState)
 			},
 			"enter_state": func(e *fsm.Event) {
-				vehicle.LastChangeOfState = time.Now()
+				vehicle.lastChangeOfState = time.Now()
 			},
 		},
 	)
@@ -94,7 +98,7 @@ func (v * Vehicle) StartRide(role UserRole) error {
 		}
 	case Admin:
 		v.fsm.SetState(ridingState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 	}
 
 	return err
@@ -119,8 +123,13 @@ func (v * Vehicle) FinishRide(batteryLeft int, role UserRole) error {
 		}
 	case Admin:
 		v.battery = batteryLeft
-		v.fsm.SetState(readyState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
+		if v.battery < 20 {
+			v.fsm.SetState(batteryLowState)
+			v.fsm.SetState(bountyState)
+		} else {
+			v.fsm.SetState(readyState)
+		}
 	}
 
 	return err
@@ -140,7 +149,7 @@ func (v * Vehicle) Collect(role UserRole) error {
 		}
 	case Admin:
 		v.fsm.SetState(collectedState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 	}
 	return err
 }
@@ -159,7 +168,7 @@ func (v * Vehicle) Drop(role UserRole) error {
 		}
 	case Admin:
 		v.fsm.SetState(droppedState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 
 	}
 	return err
@@ -181,7 +190,7 @@ func (v * Vehicle) Ready(role UserRole) error {
 	case Admin:
 		v.battery = 100
 		v.fsm.SetState(readyState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 
 	}
 	return err
@@ -192,7 +201,7 @@ func (v * Vehicle) SetBatteryLow(role UserRole) error {
 	var err error = nil
 	if role == Admin {
 		v.fsm.SetState(batteryLowState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 	} else {
 		err = errors.New("only admin can set the vehicle on low battery")
 	}
@@ -204,7 +213,7 @@ func (v * Vehicle) SetBounty(role UserRole) error {
 	var err error = nil
 	if role == Admin {
 		v.fsm.SetState(bountyState)
-		v.LastChangeOfState = time.Now()
+		v.lastChangeOfState = time.Now()
 	} else {
 		err = errors.New("only admin can set the vehicle on bounty")
 	}
@@ -241,7 +250,7 @@ func SetVehiclesFromReadyToBounty(vehicles []*Vehicle) []error {
 func SetVehiclesFromReadyToUnknown(vehicles []*Vehicle) []error {
 	var errs []error
 	for _, v := range vehicles {
-		duration := time.Since(v.LastChangeOfState)
+		duration := time.Since(v.lastChangeOfState)
 		if duration.Hours() >= 48 {
 			if v.fsm.Can(unknownEvent) {
 				if err := v.fsm.Event(unknownEvent); err != nil {
