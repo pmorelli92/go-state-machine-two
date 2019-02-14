@@ -3,17 +3,39 @@ package main
 import (
 	"fmt"
 	"github.com/pmorelli92/go-state-machine-two/pkg/domain"
+	"time"
 )
 
 func main() {
 
 	vehicle := domain.NewVehicle()
+	fmt.Println(vehicle.GetCurrentState())
+
+
+	domain.SetVehiclesFromReadyToBounty([]*domain.Vehicle{ vehicle })
+	fmt.Println(vehicle.GetCurrentState())
+
+	domain.SetVehiclesFromReadyToUnknown([]*domain.Vehicle{ vehicle })
+	fmt.Println(vehicle.GetCurrentState())
+
+	vehicle.Ready(domain.Admin)
+
+	vehicle.LastChangeOfState = time.Now().AddDate(0,0,-2)
+
+	domain.SetVehiclesFromReadyToUnknown([]*domain.Vehicle{ vehicle })
+	fmt.Println(vehicle.GetCurrentState())
+
+	vehicle.Drop(domain.Admin)
+	fmt.Println(vehicle.GetCurrentState())
+
+	vehicle.Ready(domain.Admin)
+	fmt.Println(vehicle.GetCurrentState())
 
 	fmt.Println(vehicle.GetCurrentState())
 	err := vehicle.FinishRide(10, domain.EndUser)
 	checkError(err)
 
-	err = vehicle.StartRide(domain.EndUser)
+	err = vehicle.StartRide(domain.Hunter)
 	checkError(err)
 	fmt.Println(vehicle.GetCurrentState())
 
