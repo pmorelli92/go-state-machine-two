@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/looplab/fsm"
+	"github.com/satori/go.uuid"
 	"time"
 )
 
@@ -36,24 +37,43 @@ const (
 )
 
 type Vehicle struct {
-	battery           int
-	fsm               *fsm.FSM
-	lastChangeOfState time.Time
+	id					uuid.UUID
+	battery           	int
+	fsm               	*fsm.FSM
+	lastChangeOfState 	time.Time
 }
 
 func (v *Vehicle) Battery() int {
 	return v.battery
 }
 
+func (v *Vehicle) Id() uuid.UUID {
+	return v.id
+}
+
 func (v *Vehicle) LastChangeOfState() time.Time {
 	return v.lastChangeOfState
 }
 
-func NewVehicle() *Vehicle {
+func (v *Vehicle) GetCurrentState() string {
+	return v.fsm.Current()
+}
 
-	vehicle := &Vehicle{battery:100, lastChangeOfState: time.Now() }
-	vehicle.fsm = fsm.NewFSM(
-		readyState,
+func RecreateVehicle(id uuid.UUID, battery int, lastChangeOfState time.Time, currentState string) *Vehicle {
+	vehicle := &Vehicle{battery:battery, lastChangeOfState: lastChangeOfState, id: id}
+	vehicle.fsm = getFSM(currentState, vehicle)
+	return vehicle
+}
+
+func NewVehicle() *Vehicle {
+	vehicle := &Vehicle{battery:100, lastChangeOfState: time.Now().UTC(), id: uuid.NewV4() }
+	vehicle.fsm = getFSM(readyState, vehicle)
+	return vehicle
+}
+
+func getFSM(initialState string, vehicle *Vehicle) *fsm.FSM {
+	return fsm.NewFSM(
+		initialState,
 		fsm.Events{
 
 			{Name: startRideEvent, Src: []string{readyState}, Dst: ridingState},
@@ -76,12 +96,6 @@ func NewVehicle() *Vehicle {
 			},
 		},
 	)
-
-	return vehicle
-}
-
-func (v *Vehicle) GetCurrentState() string {
-	return v.fsm.Current()
 }
 
 func (v * Vehicle) StartRide(role UserRole) error {
