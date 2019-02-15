@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-go-state-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-go-state
+      tier: infrastructure
+      role: database
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: postgres-go-state
+        tier: infrastructure
+        role: database
+    spec:
+      containers:
+        - name: postgres-go-state
+          image: postgres-go-state:local
+          ports:
+            - name: postgresql
+              containerPort: 5432
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-go-state-service
+spec:
+  selector:
+    app: postgres-go-state
+  ports:
+    - name: tcp
+      port: 5432
+      targetPort: 5432 #internal port
+      nodePort: 30703 #external port
+      protocol: TCP
+  type: NodePort

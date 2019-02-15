@@ -1,0 +1,117 @@
+##Create secrets
+##kubectl create secret generic go-state-machine-postgres-credentials --from-literal=username=db_user --from-literal=password=db_password
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-state-machine-config
+data:
+  POSTGRES_DATABASE: gostate
+  POSTGRES_SERVICE_PORT: "30703"
+  POSTGRES_SERVICE_HOST: 192.168.99.118
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-state-machine-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: go-state-machine
+      tier: backend
+      role: client
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: go-state-machine
+        tier: backend
+        role: client
+    spec:
+      containers:
+        - name: go-state-machine
+          image: go-state-machine:local
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: go-state-machine-config
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: go-state-machine-postgres-credentials
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: go-state-machine-postgres-credentials
+                  key: password
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: go-state-machine-service
+spec:
+  selector:
+    app: go-state-machine
+    tier: backend
+    role: client
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080 #internal port
+      nodePort: 30704 #external port
+  type: NodePort
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: go-state-machine-ready-to-bounty
+spec:
+  schedule: "30 21 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: go-state-machine-ready-to-bounty
+              image: buildpack-deps:curl
+              args:
+                - /bin/sh
+                - -ec
+                - curl -X PUT http://192.168.99.118:30704/vehicles/setReadyToBounty
+          restartPolicy: Never
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: go-state-machine-old-state-ready-to-unknown
+spec:
+  schedule: "*/20 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: go-state-machine-old-state-ready-to-unknown
+              image: buildpack-deps:curl
+              args:
+                - /bin/sh
+                - -ec
+                - curl -X PUT http://192.168.99.118:30704/vehicles/setOldStateToUnknown
+          restartPolicy: Never

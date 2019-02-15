@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/pmorelli92/go-state-machine-two/pkg/domain"
+	"github.com/pmorelli92/go-state-machine-two/pkg/http"
 	"github.com/pmorelli92/go-state-machine-two/pkg/persistence"
+	"log"
 )
 
 func main() {
@@ -10,11 +11,7 @@ func main() {
 	options := persistence.NewPostgresOptions()
 	rp := persistence.VehicleSqlRepository{ Options: options }
 
-	v2, _ := rp.GetAllWithLastChangeOfStateOlderThanTwoDays()
-
-	domain.SetVehiclesFromReadyToUnknown(v2)
-
-	for _, v := range v2 {
-		_ = rp.AddOrUpdate(*v)
+	if err := http.Bootstrap(&rp); err != nil {
+		log.Fatal(err)
 	}
 }
