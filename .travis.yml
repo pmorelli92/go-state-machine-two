@@ -3,23 +3,18 @@ language: go
 go:
   - "1.11"
 
+env:
+  - GO111MODULE=on
+
 services:
   - docker
-
-#go_import_path: github.com/pmorelli92/go-state-machine-two/
-
-# Install must be set to prevent default `go get` to run.
-# The dependencies have already been vendored by `dep` so
-# we don't need to fetch them.
-install:
-  -
 
 jobs:
   include:
     - stage: test_and_cover
       name: "Test (with coverage)"
       script:
-        - go test -v -covermode=count -coverprofile=coverage.out ./...
         - go get golang.org/x/tools/cmd/cover
         - go get github.com/mattn/goveralls
+        - go test -v -covermode=count -coverprofile=coverage.out ./...
         - goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN

@@ -1,15 +1,15 @@
 FROM golang:1.11 AS builder
 
-COPY . /go/src/github.com/pmorelli92/go-state-machine-two/
-WORKDIR /go/src/github.com/pmorelli92/go-state-machine-two/
+WORKDIR /app
+COPY . .
 
-RUN set -x && go get github.com/golang/dep/cmd/dep && dep ensure -v
+ENV GO111MODULE=on
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o goapp ./cmd/main.go
 
 FROM scratch
 WORKDIR /root/
-COPY --from=builder /go/src/github.com/pmorelli92/go-state-machine-two/goapp .
+COPY --from=builder /app/goapp .
 
 EXPOSE 8080
 ENTRYPOINT ["./goapp"]
