@@ -37,235 +37,52 @@ func Bootstrap(rp domain.VehicleRepository) error {
 	})
 
 	e.PUT("/vehicles/:id/startRide", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.StartRide(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.StartRide(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/finishRide", func(c echo.Context) error {
 
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(FinishRideRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.FinishRide(u.BatteryLeft, u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.FinishRide(rq.BatteryLeft, rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/collect", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.Collect(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.Collect(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/drop", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.Drop(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.Drop(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/ready", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.Ready(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.Ready(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/bounty", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.SetBounty(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.SetBounty(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/batteryLow", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.SetBatteryLow(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.SetBatteryLow(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/:id/unknown", func(c echo.Context) error {
-
-		id, err := uuid.FromString(c.Param("id"))
-		if err != nil {
-			return err
-		}
-
-		u := new(BaseRequest)
-		if err = c.Bind(u); err != nil {
-			return err
-		}
-
-		vehicle, err := rp.GetById(id)
-		if err != nil {
-			return err
-		}
-
-		if err = vehicle.Unknown(u.UserRole); err != nil {
-			return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
-		}
-
-		err = rp.AddOrUpdate(vehicle)
-		if err != nil {
-			return err
-		}
-
-		return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+		return getVehicleApplyAndPersist(c, rp, func(vehicle *domain.Vehicle, rq *BaseRequest) error {
+			return vehicle.Unknown(rq.UserRole)
+		})
 	})
 
 	e.PUT("/vehicles/setReadyToBounty", func(c echo.Context) error {
@@ -326,4 +143,35 @@ func Bootstrap(rp domain.VehicleRepository) error {
 
 	err := e.Start(":8080")
 	return err
+}
+
+
+type applyFn func(vehicle *domain.Vehicle, rq *BaseRequest) error
+
+func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, applyFn applyFn) error {
+	id, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return err
+	}
+
+	u := new(BaseRequest)
+	if err = c.Bind(u); err != nil {
+		return err
+	}
+
+	vehicle, err := rp.GetById(id)
+	if err != nil {
+		return err
+	}
+
+	if err = applyFn(vehicle, u); err != nil {
+		return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
+	}
+
+	err = rp.AddOrUpdate(vehicle)
+	if err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
 }
