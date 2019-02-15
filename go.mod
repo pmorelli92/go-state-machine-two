@@ -1,1 +1,0 @@
-module github.com/pmorelli92/go-state-machine-two
