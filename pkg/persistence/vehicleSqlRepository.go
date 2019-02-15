@@ -13,7 +13,7 @@ type VehicleSqlRepository struct {
 	Options PostgresOptions
 }
 
-func (rp *VehicleSqlRepository) AddOrUpdate(vehicle domain.Vehicle) error {
+func (rp *VehicleSqlRepository) AddOrUpdate(vehicle *domain.Vehicle) error {
 
 	db, err := sql.Open("postgres", rp.Options.getConnection())
 	panicWhenError(err)

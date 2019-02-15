@@ -29,11 +29,11 @@ const (
 	unknownEvent = "unknownEvent"
 )
 
-type UserRole int
+type UserRole string
 const (
-	EndUser	UserRole = iota + 1
-	Hunter
-	Admin
+	EndUser	UserRole = "EndUser"
+	Hunter = "Hunter"
+	Admin = "Admin"
 )
 
 type Vehicle struct {
