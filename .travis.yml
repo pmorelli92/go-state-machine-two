@@ -8,9 +8,11 @@ services:
 
 go_import_path: github.com/pmorelli92/go-state-machine-two/
 
-cache:
-  directories:
-    - ${GOPATH}/pkg/mod
+# Install must be set to prevent default `go get` to run.
+# The dependencies have already been vendored by `dep` so
+# we don't need to fetch them.
+install:
+  -
 
 jobs:
   include:
