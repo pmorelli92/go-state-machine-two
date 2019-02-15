@@ -1,0 +1,19 @@
+language: go
+
+go:
+  - "1.11"
+
+env:
+  - GO111MODULE=on
+
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: test_and_cover
+      name: "Test (with coverage)"
+      script:
+        - go get github.com/mattn/goveralls
+        - go test -v -covermode=count -coverprofile=coverage.out ./...
+        - goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN

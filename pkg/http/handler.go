@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/pmorelli92/go-state-machine-two/pkg/domain"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
