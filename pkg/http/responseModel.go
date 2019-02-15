@@ -7,7 +7,7 @@ import (
 )
 
 type ResourceResponse struct {
-	Id uuid.UUID
+	ID uuid.UUID `json:"Id"`
 }
 
 type ErrorResponse struct {
@@ -23,16 +23,16 @@ func ToErrorResponseModel(errors []error) []ErrorResponse {
 }
 
 type VehicleResponse struct {
-	Id uuid.UUID
-	Battery int
+	ID                uuid.UUID `json:"Id"`
+	Battery           int
 	LastChangeOfState time.Time
-	CurrentState string
+	CurrentState      string
 }
 
 func ToResponseModel(vehicle *domain.Vehicle) VehicleResponse {
 	return VehicleResponse{
-		Id:vehicle.Id(),
-		Battery:vehicle.Battery(),
-		LastChangeOfState:vehicle.LastChangeOfState(),
-		CurrentState:vehicle.GetCurrentState()}
+		ID:                vehicle.ID(),
+		Battery:           vehicle.Battery(),
+		LastChangeOfState: vehicle.LastChangeOfState(),
+		CurrentState:      vehicle.GetCurrentState()}
 }

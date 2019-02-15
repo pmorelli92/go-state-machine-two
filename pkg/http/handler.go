@@ -18,7 +18,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 			return c.NoContent(http.StatusConflict)
 		}
 
-		return c.JSON(http.StatusCreated, ResourceResponse{Id:vehicle.Id()})
+		return c.JSON(http.StatusCreated, ResourceResponse{ID: vehicle.ID()})
 	})
 
 	e.GET("/vehicles/:id", func(c echo.Context) error {
@@ -28,7 +28,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 			return c.NoContent(http.StatusBadRequest)
 		}
 
-		vehicle, err := rp.GetById(id)
+		vehicle, err := rp.GetByID(id)
 		if err != nil {
 			return c.NoContent(http.StatusNotFound)
 		}
@@ -107,7 +107,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 			if err != nil {
 				return c.NoContent(http.StatusConflict)
 			}
-			rsp = append(rsp, ResourceResponse{Id: v.Id()})
+			rsp = append(rsp, ResourceResponse{ID: v.ID()})
 		}
 
 		return c.JSON(http.StatusAccepted, rsp)
@@ -135,7 +135,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 			if err != nil {
 				return c.NoContent(http.StatusConflict)
 			}
-			rsp = append(rsp, ResourceResponse{Id: v.Id()})
+			rsp = append(rsp, ResourceResponse{ID: v.ID()})
 		}
 
 		return c.JSON(http.StatusAccepted, rsp)
@@ -158,7 +158,7 @@ func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, appl
 		return c.NoContent(http.StatusBadRequest)
 	}
 
-	vehicle, err := rp.GetById(id)
+	vehicle, err := rp.GetByID(id)
 	if err != nil {
 		return c.NoContent(http.StatusNotFound)
 	}
@@ -172,5 +172,5 @@ func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, appl
 		return c.NoContent(http.StatusConflict)
 	}
 
-	return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
+	return c.JSON(http.StatusAccepted, ResourceResponse{ID: vehicle.ID()})
 }

@@ -9,9 +9,9 @@ func TestRecreateVehicle(t *testing.T) {
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(ridingState)
 
-	v2 := RecreateVehicle(vehicle.Id(), vehicle.Battery(), vehicle.LastChangeOfState(), vehicle.GetCurrentState())
+	v2 := RecreateVehicle(vehicle.ID(), vehicle.Battery(), vehicle.LastChangeOfState(), vehicle.GetCurrentState())
 
-	if v2.Id() != vehicle.Id() {
+	if v2.ID() != vehicle.ID() {
 		t.Fail()
 	}
 

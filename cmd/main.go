@@ -9,7 +9,7 @@ import (
 func main() {
 
 	options := persistence.NewPostgresOptions()
-	rp := persistence.VehicleSqlRepository{ Options: options }
+	rp := persistence.VehicleSQLRepository{ Options: options }
 
 	if err := http.Bootstrap(&rp); err != nil {
 		log.Fatal(err)

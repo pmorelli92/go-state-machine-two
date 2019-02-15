@@ -47,7 +47,7 @@ func (v *Vehicle) Battery() int {
 	return v.battery
 }
 
-func (v *Vehicle) Id() uuid.UUID {
+func (v *Vehicle) ID() uuid.UUID {
 	return v.id
 }
 
@@ -99,7 +99,7 @@ func getFSM(initialState string, vehicle *Vehicle) *fsm.FSM {
 }
 
 func (v * Vehicle) StartRide(role UserRole) error {
-	var err error = nil
+	var err error
 	switch role {
 	case Hunter:
 		fallthrough
@@ -119,7 +119,7 @@ func (v * Vehicle) StartRide(role UserRole) error {
 }
 
 func (v * Vehicle) FinishRide(batteryLeft int, role UserRole) error {
-	var err error = nil
+	var err error
 	switch role {
 	case Hunter:
 		fallthrough
@@ -150,7 +150,7 @@ func (v * Vehicle) FinishRide(batteryLeft int, role UserRole) error {
 }
 
 func (v * Vehicle) Collect(role UserRole) error {
-	var err error = nil
+	var err error
 	switch role {
 	case EndUser:
 		err = errors.New("you cannot collect the vehicle being end user")
@@ -169,7 +169,7 @@ func (v * Vehicle) Collect(role UserRole) error {
 }
 
 func (v * Vehicle) Drop(role UserRole) error {
-	var err error = nil
+	var err error
 	switch role {
 	case EndUser:
 		err = errors.New("you cannot drop the vehicle being end user")
@@ -191,7 +191,7 @@ func (v * Vehicle) Drop(role UserRole) error {
 }
 
 func (v * Vehicle) Ready(role UserRole) error {
-	var err error = nil
+	var err error
 	switch role {
 	case EndUser:
 		err = errors.New("you cannot set the vehicle as ready being end user")
@@ -212,7 +212,7 @@ func (v * Vehicle) Ready(role UserRole) error {
 
 
 func (v * Vehicle) SetBatteryLow(role UserRole) error {
-	var err error = nil
+	var err error
 	if role == Admin {
 		v.fsm.SetState(batteryLowState)
 		v.lastChangeOfState = time.Now()
@@ -224,7 +224,7 @@ func (v * Vehicle) SetBatteryLow(role UserRole) error {
 
 
 func (v * Vehicle) SetBounty(role UserRole) error {
-	var err error = nil
+	var err error
 	if role == Admin {
 		v.fsm.SetState(bountyState)
 		v.lastChangeOfState = time.Now()
@@ -235,7 +235,7 @@ func (v * Vehicle) SetBounty(role UserRole) error {
 }
 
 func (v * Vehicle) Unknown(role UserRole) error {
-	var err error = nil
+	var err error
 	if role == Admin {
 		v.fsm.SetState(unknownState)
 		v.lastChangeOfState = time.Now()
