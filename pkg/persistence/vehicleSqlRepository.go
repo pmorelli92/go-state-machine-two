@@ -21,12 +21,14 @@ func (rp *VehicleSQLRepository) AddOrUpdate(vehicle *domain.Vehicle) error {
 	defer db.Close()
 
 	result, err := db.Exec(
-		"INSERT INTO go.vehicles(id, battery, current_state, last_change_state) " +
-			"VALUES ($1, $2, $3, $4) ON CONFLICT(id) DO UPDATE " +
+		"INSERT INTO go.vehicles(id, battery, current_state, last_change_state) "+
+			"VALUES ($1, $2, $3, $4) ON CONFLICT(id) DO UPDATE "+
 			"SET battery = excluded.battery, current_state = excluded.current_state, last_change_state = excluded.last_change_state",
-			vehicle.ID(), vehicle.Battery(), vehicle.GetCurrentState(), vehicle.LastChangeOfState())
+		vehicle.ID(), vehicle.Battery(), vehicle.GetCurrentState(), vehicle.LastChangeOfState())
 
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	rows, _ := result.RowsAffected()
 	if rows == 0 {

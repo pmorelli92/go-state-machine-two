@@ -29,7 +29,7 @@ func TestRecreateVehicle(t *testing.T) {
 }
 
 func TestStartRide(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter, Admin }
+	tables := []UserRole{EndUser, Hunter, Admin}
 	for _, userRole := range tables {
 		vehicle := NewVehicle()
 		lastState := vehicle.LastChangeOfState()
@@ -49,7 +49,7 @@ func TestStartRide(t *testing.T) {
 }
 
 func TestStartRideWhenVehicleStateIsDifferentThanReady(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter }
+	tables := []UserRole{EndUser, Hunter}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(ridingState)
 	lastState := vehicle.LastChangeOfState()
@@ -81,7 +81,7 @@ func TestStartRideWhenVehicleStateIsDifferentThanReady(t *testing.T) {
 }
 
 func TestFinishRide(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter, Admin }
+	tables := []UserRole{EndUser, Hunter, Admin}
 	for _, userRole := range tables {
 		vehicle := NewVehicle()
 		vehicle.fsm.SetState(ridingState)
@@ -107,7 +107,7 @@ func TestFinishRide(t *testing.T) {
 }
 
 func TestFinishRideWithLowBattery(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter, Admin }
+	tables := []UserRole{EndUser, Hunter, Admin}
 	for _, userRole := range tables {
 		vehicle := NewVehicle()
 		vehicle.fsm.SetState(ridingState)
@@ -133,7 +133,7 @@ func TestFinishRideWithLowBattery(t *testing.T) {
 }
 
 func TestFinishRideWhenVehicleStateIsDifferentThanRiding(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter }
+	tables := []UserRole{EndUser, Hunter}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(readyState)
 	lastState := vehicle.LastChangeOfState()
@@ -175,7 +175,7 @@ func TestFinishRideWhenVehicleStateIsDifferentThanRiding(t *testing.T) {
 }
 
 func TestCollect(t *testing.T) {
-	tables := []UserRole{ Hunter, Admin }
+	tables := []UserRole{Hunter, Admin}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(bountyState)
 	lastState := vehicle.LastChangeOfState()
@@ -208,7 +208,7 @@ func TestCollect(t *testing.T) {
 }
 
 func TestCollectWhenVehicleStateIsDifferentThanBounty(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter }
+	tables := []UserRole{EndUser, Hunter}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(readyState)
 	lastState := vehicle.LastChangeOfState()
@@ -241,7 +241,7 @@ func TestCollectWhenVehicleStateIsDifferentThanBounty(t *testing.T) {
 }
 
 func TestDrop(t *testing.T) {
-	tables := []UserRole{ Hunter, Admin }
+	tables := []UserRole{Hunter, Admin}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(collectedState)
 	lastState := vehicle.LastChangeOfState()
@@ -274,7 +274,7 @@ func TestDrop(t *testing.T) {
 }
 
 func TestDropWhenVehicleStateIsDifferentThanCollected(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter }
+	tables := []UserRole{EndUser, Hunter}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(readyState)
 	lastState := vehicle.LastChangeOfState()
@@ -307,7 +307,7 @@ func TestDropWhenVehicleStateIsDifferentThanCollected(t *testing.T) {
 }
 
 func TestReady(t *testing.T) {
-	tables := []UserRole{ Hunter, Admin }
+	tables := []UserRole{Hunter, Admin}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(droppedState)
 	lastState := vehicle.LastChangeOfState()
@@ -340,7 +340,7 @@ func TestReady(t *testing.T) {
 }
 
 func TestReadyWhenVehicleStateIsDifferentThanDropped(t *testing.T) {
-	tables := []UserRole{ EndUser, Hunter }
+	tables := []UserRole{EndUser, Hunter}
 	vehicle := NewVehicle()
 	vehicle.fsm.SetState(readyState)
 	lastState := vehicle.LastChangeOfState()
@@ -373,7 +373,7 @@ func TestReadyWhenVehicleStateIsDifferentThanDropped(t *testing.T) {
 }
 
 func TestBatteryLow(t *testing.T) {
-	tables := []UserRole{ Hunter, EndUser }
+	tables := []UserRole{Hunter, EndUser}
 	vehicle := NewVehicle()
 	lastState := vehicle.LastChangeOfState()
 
@@ -408,7 +408,7 @@ func TestBatteryLow(t *testing.T) {
 }
 
 func TestSetBounty(t *testing.T) {
-	tables := []UserRole{ Hunter, EndUser }
+	tables := []UserRole{Hunter, EndUser}
 	vehicle := NewVehicle()
 	lastState := vehicle.LastChangeOfState()
 
@@ -443,7 +443,7 @@ func TestSetBounty(t *testing.T) {
 }
 
 func TestUnknown(t *testing.T) {
-	tables := []UserRole{ Hunter, EndUser }
+	tables := []UserRole{Hunter, EndUser}
 	vehicle := NewVehicle()
 	lastState := vehicle.LastChangeOfState()
 
@@ -481,7 +481,7 @@ func TestSetVehiclesFromReadyToBounty(t *testing.T) {
 	vehicle := NewVehicle()
 	lastState := vehicle.LastChangeOfState()
 
-	if err := SetVehiclesFromReadyToBounty([]*Vehicle { vehicle }); err != nil {
+	if err := SetVehiclesFromReadyToBounty([]*Vehicle{vehicle}); err != nil {
 		t.Fail()
 	}
 
@@ -499,7 +499,7 @@ func TestSetVehiclesFromReadyToBountyWhenVehicleStateIsDifferentThanReady(t *tes
 	vehicle.fsm.SetState(ridingState)
 	lastState := vehicle.LastChangeOfState()
 
-	if err := SetVehiclesFromReadyToBounty([]*Vehicle { vehicle }); err == nil {
+	if err := SetVehiclesFromReadyToBounty([]*Vehicle{vehicle}); err == nil {
 		t.Fail()
 	}
 
@@ -519,7 +519,7 @@ func TestSetVehiclesFromReadyToUnknown(t *testing.T) {
 	lastState := time.Now().AddDate(0, 0, -2)
 	vehicle.lastChangeOfState = lastState
 
-	if err := SetVehiclesFromReadyToUnknown([]*Vehicle { vehicle }); err != nil {
+	if err := SetVehiclesFromReadyToUnknown([]*Vehicle{vehicle}); err != nil {
 		t.Fail()
 	}
 
@@ -536,7 +536,7 @@ func TestSetVehiclesFromReadyToUnknownWhenVehicleLastChangeOfStateHappenedBefore
 	vehicle := NewVehicle()
 	lastState := vehicle.LastChangeOfState()
 
-	if err := SetVehiclesFromReadyToUnknown([]*Vehicle { vehicle }); err == nil {
+	if err := SetVehiclesFromReadyToUnknown([]*Vehicle{vehicle}); err == nil {
 		t.Fail()
 	}
 
@@ -557,7 +557,7 @@ func TestSetVehiclesFromReadyToUnknownWhenVehicleStateIsDifferentThanReady(t *te
 	lastState := time.Now().AddDate(0, 0, -2)
 	vehicle.lastChangeOfState = lastState
 
-	if err := SetVehiclesFromReadyToUnknown([]*Vehicle { vehicle }); err == nil {
+	if err := SetVehiclesFromReadyToUnknown([]*Vehicle{vehicle}); err == nil {
 		t.Fail()
 	}
 

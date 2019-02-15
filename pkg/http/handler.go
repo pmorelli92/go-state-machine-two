@@ -164,7 +164,7 @@ func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, appl
 	}
 
 	if err = applyFn(vehicle, u); err != nil {
-		return c.JSON(http.StatusForbidden, ErrorResponse{Message:err.Error()})
+		return c.JSON(http.StatusForbidden, ErrorResponse{Message: err.Error()})
 	}
 
 	err = rp.AddOrUpdate(vehicle)

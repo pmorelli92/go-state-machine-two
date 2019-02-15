@@ -7,11 +7,11 @@ import (
 )
 
 type PostgresOptions struct {
-	host		string
-	port		int
-	database	string
-	user		string
-	password	string
+	host     string
+	port     int
+	database string
+	user     string
+	password string
 }
 
 func NewPostgresOptions() PostgresOptions {
@@ -20,10 +20,10 @@ func NewPostgresOptions() PostgresOptions {
 	panicWhenError(err)
 
 	return PostgresOptions{
-		host: os.Getenv("POSTGRES_SERVICE_HOST"),
-		port: port,
+		host:     os.Getenv("POSTGRES_SERVICE_HOST"),
+		port:     port,
 		database: os.Getenv("POSTGRES_DATABASE"),
-		user: os.Getenv("POSTGRES_USER"),
+		user:     os.Getenv("POSTGRES_USER"),
 		password: os.Getenv("POSTGRES_PASSWORD"),
 	}
 }

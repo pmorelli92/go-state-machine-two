@@ -17,7 +17,7 @@ type ErrorResponse struct {
 func ToErrorResponseModel(errors []error) []ErrorResponse {
 	var rsp []ErrorResponse
 	for _, e := range errors {
-		rsp = append(rsp, ErrorResponse{Message:e.Error()})
+		rsp = append(rsp, ErrorResponse{Message: e.Error()})
 	}
 	return rsp
 }

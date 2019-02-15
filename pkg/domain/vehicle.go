@@ -9,38 +9,39 @@ import (
 )
 
 const (
-	readyState = "ready"
-	ridingState = "riding"
+	readyState      = "ready"
+	ridingState     = "riding"
 	batteryLowState = "batteryLow"
-	bountyState = "bounty"
-	collectedState = "collected"
-	droppedState = "dropped"
-	unknownState = "unknown"
+	bountyState     = "bounty"
+	collectedState  = "collected"
+	droppedState    = "dropped"
+	unknownState    = "unknown"
 )
 
 const (
-	startRideEvent = "startRideEvent"
+	startRideEvent  = "startRideEvent"
 	finishRideEvent = "finishRideEvent"
 	batteryLowEvent = "batteryLowEvent"
-	bountyEvent = "bountyEvent"
-	collectedEvent = "collectedEvent"
-	droppedEvent = "droppedEvent"
-	readyEvent = "readyEvent"
-	unknownEvent = "unknownEvent"
+	bountyEvent     = "bountyEvent"
+	collectedEvent  = "collectedEvent"
+	droppedEvent    = "droppedEvent"
+	readyEvent      = "readyEvent"
+	unknownEvent    = "unknownEvent"
 )
 
 type UserRole string
+
 const (
-	EndUser	UserRole = "EndUser"
-	Hunter = "Hunter"
-	Admin = "Admin"
+	EndUser UserRole = "EndUser"
+	Hunter           = "Hunter"
+	Admin            = "Admin"
 )
 
 type Vehicle struct {
-	id					uuid.UUID
-	battery           	int
-	fsm               	*fsm.FSM
-	lastChangeOfState 	time.Time
+	id                uuid.UUID
+	battery           int
+	fsm               *fsm.FSM
+	lastChangeOfState time.Time
 }
 
 func (v *Vehicle) Battery() int {
@@ -60,13 +61,13 @@ func (v *Vehicle) GetCurrentState() string {
 }
 
 func RecreateVehicle(id uuid.UUID, battery int, lastChangeOfState time.Time, currentState string) *Vehicle {
-	vehicle := &Vehicle{battery:battery, lastChangeOfState: lastChangeOfState, id: id}
+	vehicle := &Vehicle{battery: battery, lastChangeOfState: lastChangeOfState, id: id}
 	vehicle.fsm = getFSM(currentState, vehicle)
 	return vehicle
 }
 
 func NewVehicle() *Vehicle {
-	vehicle := &Vehicle{battery:100, lastChangeOfState: time.Now().UTC(), id: uuid.NewV4() }
+	vehicle := &Vehicle{battery: 100, lastChangeOfState: time.Now().UTC(), id: uuid.NewV4()}
 	vehicle.fsm = getFSM(readyState, vehicle)
 	return vehicle
 }
@@ -98,7 +99,7 @@ func getFSM(initialState string, vehicle *Vehicle) *fsm.FSM {
 	)
 }
 
-func (v * Vehicle) StartRide(role UserRole) error {
+func (v *Vehicle) StartRide(role UserRole) error {
 	var err error
 	switch role {
 	case Hunter:
@@ -118,7 +119,7 @@ func (v * Vehicle) StartRide(role UserRole) error {
 	return err
 }
 
-func (v * Vehicle) FinishRide(batteryLeft int, role UserRole) error {
+func (v *Vehicle) FinishRide(batteryLeft int, role UserRole) error {
 	var err error
 	switch role {
 	case Hunter:
@@ -149,7 +150,7 @@ func (v * Vehicle) FinishRide(batteryLeft int, role UserRole) error {
 	return err
 }
 
-func (v * Vehicle) Collect(role UserRole) error {
+func (v *Vehicle) Collect(role UserRole) error {
 	var err error
 	switch role {
 	case EndUser:
@@ -168,7 +169,7 @@ func (v * Vehicle) Collect(role UserRole) error {
 	return err
 }
 
-func (v * Vehicle) Drop(role UserRole) error {
+func (v *Vehicle) Drop(role UserRole) error {
 	var err error
 	switch role {
 	case EndUser:
@@ -190,7 +191,7 @@ func (v * Vehicle) Drop(role UserRole) error {
 	return err
 }
 
-func (v * Vehicle) Ready(role UserRole) error {
+func (v *Vehicle) Ready(role UserRole) error {
 	var err error
 	switch role {
 	case EndUser:
@@ -210,8 +211,7 @@ func (v * Vehicle) Ready(role UserRole) error {
 	return err
 }
 
-
-func (v * Vehicle) SetBatteryLow(role UserRole) error {
+func (v *Vehicle) SetBatteryLow(role UserRole) error {
 	var err error
 	if role == Admin {
 		v.fsm.SetState(batteryLowState)
@@ -222,8 +222,7 @@ func (v * Vehicle) SetBatteryLow(role UserRole) error {
 	return err
 }
 
-
-func (v * Vehicle) SetBounty(role UserRole) error {
+func (v *Vehicle) SetBounty(role UserRole) error {
 	var err error
 	if role == Admin {
 		v.fsm.SetState(bountyState)
@@ -234,7 +233,7 @@ func (v * Vehicle) SetBounty(role UserRole) error {
 	return err
 }
 
-func (v * Vehicle) Unknown(role UserRole) error {
+func (v *Vehicle) Unknown(role UserRole) error {
 	var err error
 	if role == Admin {
 		v.fsm.SetState(unknownState)
