@@ -175,12 +175,14 @@ func (v * Vehicle) Drop(role UserRole) error {
 		err = errors.New("you cannot drop the vehicle being end user")
 	case Hunter:
 		if v.fsm.Can(droppedEvent) {
+			v.battery = 100
 			err = v.fsm.Event(droppedEvent)
 		} else {
 			errMsg := fmt.Sprintf("you cannot drop the vehicle right now the current state is %s", v.GetCurrentState())
 			err = errors.New(errMsg)
 		}
 	case Admin:
+		v.battery = 100
 		v.fsm.SetState(droppedState)
 		v.lastChangeOfState = time.Now()
 
@@ -195,14 +197,12 @@ func (v * Vehicle) Ready(role UserRole) error {
 		err = errors.New("you cannot set the vehicle as ready being end user")
 	case Hunter:
 		if v.fsm.Can(readyEvent) {
-			v.battery = 100
 			err = v.fsm.Event(readyEvent)
 		} else {
 			errMsg := fmt.Sprintf("you cannot set the vehicle ready right now the current state is %s", v.GetCurrentState())
 			err = errors.New(errMsg)
 		}
 	case Admin:
-		v.battery = 100
 		v.fsm.SetState(readyState)
 		v.lastChangeOfState = time.Now()
 

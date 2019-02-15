@@ -95,7 +95,7 @@ func (rp *VehicleSqlRepository) GetAllWithLastChangeOfStateOlderThanTwoDays() ([
 
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM voi.vehicles WHERE now() >= last_change_state + interval '48 hours'")
+	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM voi.vehicles WHERE now() >= last_change_state + interval '48 hours' AND current_state = 'ready'")
 	if err != nil {
 		return nil, err
 	}
