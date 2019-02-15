@@ -5,6 +5,29 @@ import (
 	"time"
 )
 
+func TestRecreateVehicle(t *testing.T) {
+	vehicle := NewVehicle()
+	vehicle.fsm.SetState(ridingState)
+
+	v2 := RecreateVehicle(vehicle.Id(), vehicle.Battery(), vehicle.LastChangeOfState(), vehicle.GetCurrentState())
+
+	if v2.Id() != vehicle.Id() {
+		t.Fail()
+	}
+
+	if v2.Battery() != vehicle.Battery() {
+		t.Fail()
+	}
+
+	if v2.GetCurrentState() != vehicle.GetCurrentState() {
+		t.Fail()
+	}
+
+	if v2.LastChangeOfState() != vehicle.LastChangeOfState() {
+		t.Fail()
+	}
+}
+
 func TestStartRide(t *testing.T) {
 	tables := []UserRole{ EndUser, Hunter, Admin }
 	for _, userRole := range tables {

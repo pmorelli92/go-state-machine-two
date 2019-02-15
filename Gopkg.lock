@@ -2,6 +2,17 @@
 
 
 [[projects]]
+  digest = "1:8ef506fc2bb9ced9b151dafa592d4046063d744c646c1bbe801982ce87e4bc24"
+  name = "github.com/lib/pq"
+  packages = [
+    ".",
+    "oid",
+  ]
+  pruneopts = "UT"
+  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:17e2b99f622792fcc12942bfc0f9089d1532f6dfc40878b44ae145b458fbab30"
   name = "github.com/looplab/fsm"
   packages = ["."]
@@ -9,9 +20,21 @@
   revision = "84b5307469f859464403f80919467950a79de1b1"
   version = "v0.1.0"
 
+[[projects]]
+  digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/looplab/fsm"]
+  input-imports = [
+    "github.com/lib/pq",
+    "github.com/looplab/fsm",
+    "github.com/satori/go.uuid",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1
