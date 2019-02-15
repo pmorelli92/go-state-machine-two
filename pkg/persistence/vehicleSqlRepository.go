@@ -21,7 +21,7 @@ func (rp *VehicleSqlRepository) AddOrUpdate(vehicle *domain.Vehicle) error {
 	defer db.Close()
 
 	result, err := db.Exec(
-		"INSERT INTO voi.vehicles(id, battery, current_state, last_change_state) " +
+		"INSERT INTO go.vehicles(id, battery, current_state, last_change_state) " +
 			"VALUES ($1, $2, $3, $4) ON CONFLICT(id) DO UPDATE " +
 			"SET battery = excluded.battery, current_state = excluded.current_state, last_change_state = excluded.last_change_state",
 			vehicle.Id(), vehicle.Battery(), vehicle.GetCurrentState(), vehicle.LastChangeOfState())
@@ -43,7 +43,7 @@ func (rp *VehicleSqlRepository) GetById(id uuid.UUID) (*domain.Vehicle, error) {
 
 	defer db.Close()
 
-	result := db.QueryRow("SELECT id, battery, current_state, last_change_state FROM voi.vehicles WHERE id = $1", id)
+	result := db.QueryRow("SELECT id, battery, current_state, last_change_state FROM go.vehicles WHERE id = $1", id)
 
 	var vId uuid.UUID
 	var battery int
@@ -65,7 +65,7 @@ func (rp *VehicleSqlRepository) GetAllWhereReadyState() ([]*domain.Vehicle, erro
 
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM voi.vehicles WHERE current_state = 'ready'")
+	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM go.vehicles WHERE current_state = 'ready'")
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (rp *VehicleSqlRepository) GetAllWithLastChangeOfStateOlderThanTwoDays() ([
 
 	defer db.Close()
 
-	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM voi.vehicles WHERE now() >= last_change_state + interval '48 hours' AND current_state = 'ready'")
+	rows, err := db.Query("SELECT id, battery, current_state, last_change_state FROM go.vehicles WHERE now() >= last_change_state + interval '48 hours' AND current_state = 'ready'")
 	if err != nil {
 		return nil, err
 	}

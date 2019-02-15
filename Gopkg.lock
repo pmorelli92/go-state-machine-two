@@ -56,14 +56,6 @@
   version = "v0.0.4"
 
 [[projects]]
-  branch = "master"
-  digest = "1:788c083d862bd2d6adf62a76a7f10b85c4186f71cab91cf5b7c1bf5c3a190534"
-  name = "github.com/pmorelli92/go-ddd-cqrs"
-  packages = ["pkg/domain"]
-  pruneopts = "UT"
-  revision = "aa93ebcf3243039f02c500349ca83ea9579636ef"
-
-[[projects]]
   digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
   name = "github.com/satori/go.uuid"
   packages = ["."]
@@ -113,7 +105,6 @@
     "github.com/labstack/echo",
     "github.com/lib/pq",
     "github.com/looplab/fsm",
-    "github.com/pmorelli92/go-ddd-cqrs/pkg/domain",
     "github.com/satori/go.uuid",
   ]
   solver-name = "gps-cdcl"

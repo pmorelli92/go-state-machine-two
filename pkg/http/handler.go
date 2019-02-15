@@ -15,7 +15,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 
 		vehicle := domain.NewVehicle()
 		if err := rp.AddOrUpdate(vehicle); err != nil {
-			return err
+			return c.NoContent(http.StatusConflict)
 		}
 
 		return c.JSON(http.StatusCreated, ResourceResponse{Id:vehicle.Id()})
@@ -25,12 +25,12 @@ func Bootstrap(rp domain.VehicleRepository) error {
 
 		id, err := uuid.FromString(c.Param("id"))
 		if err != nil {
-			return err
+			return c.NoContent(http.StatusBadRequest)
 		}
 
 		vehicle, err := rp.GetById(id)
 		if err != nil {
-			return err
+			return c.NoContent(http.StatusNotFound)
 		}
 
 		return c.JSON(http.StatusOK, ToResponseModel(vehicle))
@@ -105,7 +105,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 		for _, v := range vehicles {
 			err = rp.AddOrUpdate(v)
 			if err != nil {
-				return err
+				return c.NoContent(http.StatusConflict)
 			}
 			rsp = append(rsp, ResourceResponse{Id: v.Id()})
 		}
@@ -133,7 +133,7 @@ func Bootstrap(rp domain.VehicleRepository) error {
 		for _, v := range vehicles {
 			err = rp.AddOrUpdate(v)
 			if err != nil {
-				return err
+				return c.NoContent(http.StatusConflict)
 			}
 			rsp = append(rsp, ResourceResponse{Id: v.Id()})
 		}
@@ -145,23 +145,22 @@ func Bootstrap(rp domain.VehicleRepository) error {
 	return err
 }
 
-
 type applyFn func(vehicle *domain.Vehicle, rq *BaseRequest) error
 
 func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, applyFn applyFn) error {
 	id, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusBadRequest)
 	}
 
 	u := new(BaseRequest)
 	if err = c.Bind(u); err != nil {
-		return err
+		return c.NoContent(http.StatusBadRequest)
 	}
 
 	vehicle, err := rp.GetById(id)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusNotFound)
 	}
 
 	if err = applyFn(vehicle, u); err != nil {
@@ -170,7 +169,7 @@ func getVehicleApplyAndPersist(c echo.Context, rp domain.VehicleRepository, appl
 
 	err = rp.AddOrUpdate(vehicle)
 	if err != nil {
-		return err
+		return c.NoContent(http.StatusConflict)
 	}
 
 	return c.JSON(http.StatusAccepted, ResourceResponse{Id:vehicle.Id()})
