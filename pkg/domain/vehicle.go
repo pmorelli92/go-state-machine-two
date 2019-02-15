@@ -223,14 +223,10 @@ func (v * Vehicle) SetBounty(role UserRole) error {
 func (v * Vehicle) Unknown(role UserRole) error {
 	var err error = nil
 	if role == Admin {
-		if v.fsm.Can(unknownEvent) {
-			err = v.fsm.Event(unknownEvent)
-		} else {
-			errMsg := fmt.Sprintf("you cannot set the vehicle to unknown right now the current state is %s", v.GetCurrentState())
-			err = errors.New(errMsg)
-		}
+		v.fsm.SetState(unknownState)
+		v.lastChangeOfState = time.Now()
 	} else {
-		err = errors.New("only admin can set the vehicle to unknown")
+		err = errors.New("only admin can set the vehicle on unknown")
 	}
 	return err
 }
@@ -239,9 +235,10 @@ func SetVehiclesFromReadyToBounty(vehicles []*Vehicle) []error {
 	var errs []error
 	for _, v := range vehicles {
 		if v.fsm.Can(bountyEvent) {
-			if err := v.fsm.Event(bountyEvent); err != nil {
-				errs = append(errs, err)
-			}
+			_ = v.fsm.Event(bountyEvent)
+		} else {
+			errMsg := fmt.Sprintf("the vehicle cannot be put on bounty, its current state is %s", v.GetCurrentState())
+			errs = append(errs, errors.New(errMsg))
 		}
 	}
 	return errs
@@ -253,10 +250,13 @@ func SetVehiclesFromReadyToUnknown(vehicles []*Vehicle) []error {
 		duration := time.Since(v.lastChangeOfState)
 		if duration.Hours() >= 48 {
 			if v.fsm.Can(unknownEvent) {
-				if err := v.fsm.Event(unknownEvent); err != nil {
-					errs = append(errs, err)
-				}
+				_ = v.fsm.Event(unknownEvent)
+			} else {
+				errMsg := fmt.Sprintf("the vehicle cannot be put on unknown, its current state is %s", v.GetCurrentState())
+				errs = append(errs, errors.New(errMsg))
 			}
+		} else {
+			errs = append(errs, errors.New("the vehicle cannot be put on unknown, last state change happened before 48 hours"))
 		}
 	}
 	return errs
