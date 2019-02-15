@@ -6,6 +6,8 @@ go:
 services:
   - docker
 
+go_import_path: github.com/pmorelli92/go-state-machine-two/
+
 cache:
   directories:
     - ${GOPATH}/pkg/mod
