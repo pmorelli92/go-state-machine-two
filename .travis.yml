@@ -15,5 +15,4 @@ jobs:
       name: "Test (with coverage)"
       script:
         - go get github.com/mattn/goveralls
-        - go test -v -covermode=count -coverprofile=coverage.out ./...
-        - goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN
+        - goveralls -service travis-ci -repotoken $COVERALLS_TOKEN
