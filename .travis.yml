@@ -6,13 +6,12 @@ go:
 env:
   - GO111MODULE=on
 
-services:
-  - docker
+before_install:
+  - go get github.com/mattn/goveralls
 
 jobs:
   include:
     - stage: test_and_cover
       name: "Test (with coverage)"
       script:
-        - go get github.com/mattn/goveralls
         - goveralls -service travis-ci -repotoken $COVERALLS_TOKEN
