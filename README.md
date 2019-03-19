@@ -26,3 +26,7 @@
     ```
     GoStateMachineApi http://<REPLACE_WITH_MINIKUBE_OR_K8S_IP>:30704
     ```
+    
+---
+
+![Imgur](https://i.imgur.com/FMJUjA7.png)
